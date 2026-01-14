@@ -8,6 +8,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+from sklearn.preprocessing import FunctionTransformer
+
+
+
+def _clip(X):
+    return X.clip(-3, 3)
 
 def infer_columns(X: pd.DataFrame) -> Tuple[List[str], List[str]]:
     '''Détecte colonnes numériques vs catégorielles.'''
@@ -27,6 +33,7 @@ def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     num_pipe = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="median")),
         ("scaler", StandardScaler()),
+        ("clip",FunctionTransformer(_clip)),
     ])
 
     cat_pipe = Pipeline(steps=[
